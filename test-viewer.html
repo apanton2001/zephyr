@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zephyr Component Test Viewer</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #2563eb;
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #1e40af;
+            margin-top: 30px;
+        }
+        .component-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: #f9fafb;
+        }
+        .component-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .component-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 0;
+        }
+        .test-status {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        .status-manual {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+        .test-details {
+            margin-top: 15px;
+            border-top: 1px solid #e5e7eb;
+            padding-top: 15px;
+        }
+        .test-item {
+            margin-bottom: 10px;
+            padding-left: 20px;
+            position: relative;
+        }
+        .test-item::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #6b7280;
+        }
+        .code-block {
+            background-color: #f1f5f9;
+            border-radius: 6px;
+            padding: 15px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9rem;
+            margin: 15px 0;
+        }
+        .instructions {
+            background-color: #fffbeb;
+            border-left: 4px solid #f59e0b;
+            padding: 15px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Zephyr Warehouse CRM - Component Test Viewer</h1>
+    
+    <div class="instructions">
+        <p><strong>How to test components:</strong></p>
+        <ol>
+            <li>Review the test details for each component below</li>
+            <li>Open the component files in your code editor to inspect the implementation</li>
+            <li>Use the manual verification steps to check component functionality</li>
+            <li>For automated testing, follow the setup instructions in the "Setting Up Automated Tests" section</li>
+        </ol>
+    </div>
+
+    <h2>Component Tests</h2>
+    
+    <div class="component-card">
+        <div class="component-header">
+            <h3 class="component-title">Dashboard Component</h3>
+            <span class="test-status status-manual">Manual Testing</span>
+        </div>
+        <p>The Dashboard component displays key metrics and recent activity for the warehouse management system.</p>
+        
+        <div class="test-details">
+            <h4>Test Cases:</h4>
+            <div class="test-item">Verify dashboard title is displayed as "Zephyr Dashboard"</div>
+            <div class="test-item">Confirm all metric cards are present (Total Inventory, Low Stock Alerts, Pending Orders, Employee Tasks)</div>
+            <div class="test-item">Check that Recent Activity section is displayed with activity items</div>
+            <div class="test-item">Verify that metric values are displayed with appropriate formatting</div>
+        </div>
+        
+        <div class="code-block">
+            // File: src/components/__tests__/Dashboard.test.tsx
+            
+            import React from 'react';
+            import { render, screen } from '@testing-library/react';
+            import Dashboard from '../Dashboard';
+
+            describe('Dashboard Component', () => {
+              test('renders dashboard title', () => {
+                render(&lt;Dashboard /&gt;);
+                const titleElement = screen.getByText(/Zephyr Dashboard/i);
+                expect(titleElement).toBeInTheDocument();
+              });
+
+              test('renders key metric cards', () => {
+                render(&lt;Dashboard /&gt;);
+                expect(screen.getByText(/Total Inventory/i)).toBeInTheDocument();
+                expect(screen.getByText(/Low Stock Alerts/i)).toBeInTheDocument();
+                expect(screen.getByText(/Pending Orders/i)).toBeInTheDocument();
+                expect(screen.getByText(/Employee Tasks/i)).toBeInTheDocument();
+              });
+
+              test('renders recent activity section', () => {
+                render(&lt;Dashboard /&gt;);
+                const activitySection = screen.getByText(/Recent Activity/i);
+                expect(activitySection).toBeInTheDocument();
+              });
+            });
+        </div>
+    </div>
+    
+    <div class="component-card">
+        <div class="component-header">
+            <h3 class="component-title">Predictive Inventory Component</h3>
+            <span class="test-status status-manual">Manual Testing</span>
+        </div>
+        <p>The Predictive Inventory component displays inventory predictions and allows filtering by urgency and category.</p>
+        
+        <div class="test-details">
+            <h4>Test Cases:</h4>
+            <div class="test-item">Verify component title is displayed as "Inventory Predictions"</div>
+            <div class="test-item">Confirm filter controls are present (Urgency, Category)</div>
+            <div class="test-item">Check that both Table View and Card View tabs are available</div>
+            <div class="test-item">Verify that switching between views works correctly</div>
+            <div class="test-item">Test that filtering by urgency shows appropriate results</div>
+        </div>
+        
+        <div class="code-block">
+            // File: src/components/__tests__/PredictiveInventory.test.tsx
+            
+            import React from 'react';
+            import { render, screen, fireEvent } from '@testing-library/react';
+            import PredictiveInventory from '../PredictiveInventory';
+
+            // Mock child components for focused testing
+            jest.mock('../PredictionTable', () => {
+              return function MockPredictionTable({ predictions }) {
+                return (
+                  &lt;div data-testid="prediction-table"&gt;
+                    Mocked Table with {predictions.length} items
+                  &lt;/div&gt;
+                );
+              };
+            });
+
+            describe('PredictiveInventory Component', () => {
+              test('renders the component title', () => {
+                render(&lt;PredictiveInventory /&gt;);
+                const titleElement = screen.getByText(/Inventory Predictions/i);
+                expect(titleElement).toBeInTheDocument();
+              });
+
+              test('renders filter controls', () => {
+                render(&lt;PredictiveInventory /&gt;);
+                expect(screen.getByText(/Urgency/i)).toBeInTheDocument();
+                expect(screen.getByText(/Category/i)).toBeInTheDocument();
+              });
+
+              test('switches between table and card views', () => {
+                render(&lt;PredictiveInventory /&gt;);
+                
+                // Initially should show table view
+                expect(screen.getByTestId('prediction-table')).toBeInTheDocument();
+                
+                // Click on card view tab
+                fireEvent.click(screen.getByText(/Card View/i));
+                
+                // Should now show card view
+                expect(screen.getByTestId('prediction-cards')).toBeInTheDocument();
+              });
+            });
+        </div>
+    </div>
+    
+    <div class="component-card">
+        <div class="component-header">
+            <h3 class="component-title">Metrics Dashboard Component</h3>
+            <span class="test-status status-manual">Manual Testing</span>
+        </div>
+        <p>The Metrics Dashboard component displays performance metrics with detailed breakdowns and visualizations.</p>
+        
+        <div class="test-details">
+            <h4>Test Cases:</h4>
+            <div class="test-item">Verify dashboard title is displayed as "Zephyr Performance Metrics"</div>
+            <div class="test-item">Confirm all metric navigation options are present (Overview, Order Processing, etc.)</div>
+            <div class="test-item">Check that the overview shows Key Performance Indicators section</div>
+            <div class="test-item">Verify that navigation between different metric views works correctly</div>
+        </div>
+        
+        <div class="code-block">
+            // File: src/components/metrics/__tests__/MetricsDashboard.test.tsx
+            
+            import React from 'react';
+            import { render, screen, fireEvent } from '@testing-library/react';
+            import MetricsDashboard from '../MetricsDashboard';
+
+            // Mock child components
+            jest.mock('../OrderProcessingSpeed', () => {
+              return function MockOrderProcessingSpeed() {
+                return &lt;div data-testid="order-processing-speed"&gt;Order Processing Speed Component&lt;/div&gt;;
+              };
+            });
+
+            describe('MetricsDashboard Component', () => {
+              test('renders the dashboard title', () => {
+                render(&lt;MetricsDashboard /&gt;);
+                const titleElement = screen.getByText(/Zephyr Performance Metrics/i);
+                expect(titleElement).toBeInTheDocument();
+              });
+
+              test('renders metric navigation options', () => {
+                render(&lt;MetricsDashboard /&gt;);
+                expect(screen.getByText(/Overview/i)).toBeInTheDocument();
+                expect(screen.getByText(/Order Processing/i)).toBeInTheDocument();
+                expect(screen.getByText(/Inventory Accuracy/i)).toBeInTheDocument();
+                expect(screen.getByText(/Task Completion/i)).toBeInTheDocument();
+              });
+
+              test('navigates to Order Processing Speed dashboard', () => {
+                render(&lt;MetricsDashboard /&gt;);
+                
+                // Click on Order Processing option
+                fireEvent.click(screen.getByText(/Order Processing/i));
+                
+                // Should show Order Processing Speed component
+                expect(screen.getByTestId('order-processing-speed')).toBeInTheDocument();
+              });
+            });
+        </div>
+    </div>
+    
+    <h2>Setting Up Automated Tests</h2>
+    
+    <div class="component-card">
+        <p>To run the automated tests, you'll need to resolve the dependency issues first. Here are the steps:</p>
+        
+        <ol>
+            <li>Create a new React project using Create React App:
+                <div class="code-block">npx create-react-app zephyr-test --template typescript</div>
+            </li>
+            <li>Copy the component files and test files to the new project</li>
+            <li>Install the necessary testing dependencies:
+                <div class="code-block">npm install --save-dev @testing-library/react @testing-library/jest-dom @testing-library/user-event</div>
+            </li>
+            <li>Run the tests with:
+                <div class="code-block">npm test</div>
+            </li>
+        </ol>
+        
+        <p>Alternatively, you can use the manual test runner component that was created:</p>
+        
+        <div class="code-block">
+            // File: src/components/TestRunner.tsx
+            
+            // This component provides an interactive way to test components
+            // without relying on external testing libraries.
+            
+            // To use it:
+            // 1. Navigate to the "Test Components" option in the sidebar
+            // 2. Select a component to test from the buttons
+            // 3. Review the test results and component preview
+        </div>
+    </div>
+    
+    <h2>Manual Testing Instructions</h2>
+    
+    <div class="component-card">
+        <p>For manual testing of components, follow these steps:</p>
+        
+        <ol>
+            <li>Open each component file in your code editor</li>
+            <li>Review the component implementation to understand its functionality</li>
+            <li>Check that all required UI elements are present</li>
+            <li>Verify that the component renders with the correct styling</li>
+            <li>Test any interactive elements (buttons, tabs, filters) by manually checking the code logic</li>
+        </ol>
+        
+        <p>Key components to test:</p>
+        <ul>
+            <li><strong>Dashboard</strong> - src/components/Dashboard.tsx</li>
+            <li><strong>Inventory</strong> - src/components/Inventory.tsx</li>
+            <li><strong>PredictiveInventory</strong> - src/components/PredictiveInventory.tsx</li>
+            <li><strong>MetricsDashboard</strong> - src/components/metrics/MetricsDashboard.tsx</li>
+            <li><strong>OrderProcessingSpeed</strong> - src/components/metrics/OrderProcessingSpeed.tsx</li>
+            <li><strong>InventoryAccuracy</strong> - src/components/metrics/InventoryAccuracy.tsx</li>
+            <li><strong>TaskCompletionRate</strong> - src/components/metrics/TaskCompletionRate.tsx</li>
+        </ul>
+    </div>
+</body>
+</html>
